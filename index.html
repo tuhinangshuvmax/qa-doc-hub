@@ -1,26 +1,655 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>qa-doc-hub</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+    <title>QA Documentation Hub</title>
+    <style>
+      /* Base styles */
+      :root {
+        --card-1-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --card-2-gradient: linear-gradient(135deg, #FF6CAB 0%, #7366FF 100%);
+        --text: #fff;
+        --card-bg: rgba(255, 255, 255, 0.9);
+        --card-text: #333;
+        --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        --card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        --tag-bg: rgba(0, 0, 0, 0.2);
+      }
+      
+      .dark {
+        --card-bg: rgba(30, 41, 59, 0.8);
+        --card-text: #e2e8f0;
+        --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        --card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        --tag-bg: rgba(0, 0, 0, 0.4);
+      }
+      
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        min-height: 100vh;
+        padding: 1.5rem;
+        background: var(--card-1-gradient);
+        color: var(--text);
+        transition: all 0.3s ease;
+      }
+      
+      .dark body {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+      }
+      
+      h2:after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.3);
+        margin-left: 1rem;
+      }
+      
+      /* Toggle button */
+      .toggle-container {
+        display: flex;
+        align-items: center;
+      }
+      
+      .toggle-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        border-radius: 9999px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      
+      .toggle-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      
+      /* Search input */
+      .search-container {
+        position: relative;
+        margin-left: auto;
+      }
+      
+      .search-input {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1rem 0.5rem 2.5rem;
+        border-radius: 9999px;
+        outline: none;
+        width: 200px;
+        transition: all 0.3s;
+      }
+      
+      .search-input:focus {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+      }
+      
+      .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        width: 16px;
+        height: 16px;
+        pointer-events: none;
+      }
+      
+      /* Card grid */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+      
+      /* Card */
+      .card {
+        position: relative;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--card-text);
+        overflow: hidden;
+      }
+      
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--card-1-gradient);
+        border-radius: 5px 5px 0 0;
+      }
+      
+      .card-v2::before {
+        background: var(--card-2-gradient);
+      }
+      
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--card-hover-shadow);
+      }
+      
+      .card h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        z-index: 1;
+      }
+      
+      .card-tag {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--tag-bg);
+        color: white;
+        border-radius: 15px;
+        padding: 0.1rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+      
+      .card-icon {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        opacity: 0.4;
+        transition: opacity 0.3s ease;
+      }
+      
+      .card:hover .card-icon {
+        opacity: 0.7;
+      }
+      
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+        
+        .search-container {
+          width: 100%;
+          margin-left: 0;
+        }
+        
+        .search-input {
+          width: 100%;
+        }
+        
+        h1 {
+          font-size: 2rem;
+        }
+      }
+      
+      @media (max-width: 640px) {
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        h1 {
+          font-size: 1.875rem;
+        }
+        
+        h2 {
+          font-size: 1.5rem;
+        }
+      }
 
-    <meta property="og:title" content="qa-doc-hub" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
-
   <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="container">
+      <!-- Header with dark mode toggle and search -->
+      <div class="header">
+        <button id="darkModeToggle" class="toggle-button" aria-label="Toggle dark mode">
+          <svg xmlns="http://www.w3.org/2000/svg" class="moon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="sun hidden" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        
+        <div class="search-container">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search resources...">
+          <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <h1>QA Documentation Hub</h1>
+      
+      <!-- VMax 1.0 Section -->
+      <h2>VMax 1.0</h2>
+      <div class="card-grid" id="vmax1Container">
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/r/sites/techdepartment/_layouts/15/Doc.aspx?sourcedoc=%7B90F8BB4C-ED52-4647-83D9-E8971D111546%7D&file=iOS.xlsx&action=default&mobileredirect=true" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>iOS Bug Tracker</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/r/sites/techdepartment/_layouts/15/Doc.aspx?sourcedoc=%7BE6413674-BC2A-4919-96A2-0DB15280330E%7D&file=Android.xlsx&action=default&mobileredirect=true" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>Android Bug Tracker</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/r/sites/techdepartment/Shared%20Documents/General/002%20Testing/Test%20Document%20from%20September%202024/Bug%20List/CRM.xlsx?d=w975c06b9b2274f008fae1fdd79539c73&csf=1&web=1&e=D1643t" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>CRM Bug Tracker</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/r/sites/techdepartment/_layouts/15/Doc.aspx?sourcedoc=%7BD5D50BCD-1905-49EE-9E08-2F566FBFB607%7D&file=Mobile%20Issues%20%26%20Bugs%20-%20July%202024.xlsx&action=default&mobileredirect=true&wdsle=0" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>OLD Bug Tracker (All)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/r/sites/techdepartment/_layouts/15/Doc.aspx?sourcedoc=%7BA2E4D2C1-FAEA-4BA2-9FD5-E7E49F7AEE58%7D&file=Test%20Cases%20-%20From%20September%202024.xlsx&action=default&mobileredirect=true" target="_blank" class="card-link" data-category="test-case">
+          <div class="card">
+            <div class="card-tag">Test Case</div>
+            <h3>OLD Test Cases (Sep 2024)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/sites/techdepartment/Shared%20Documents/Forms/AllItems.aspx?newTargetListUrl=%2Fsites%2Ftechdepartment%2FShared%20Documents&viewpath=%2Fsites%2Ftechdepartment%2FShared%20Documents%2FForms%2FAllItems%2Easpx&id=%2Fsites%2Ftechdepartment%2FShared%20Documents%2FGeneral%2F002%20Testing%2FTest%20Document%20from%20September%202024&viewid=964e5c08%2D5f01%2D44e2%2D863c%2D16dd168b194c" target="_blank" class="card-link" data-category="folder">
+          <div class="card">
+            <div class="card-tag">Folder</div>
+            <h3>QA Master Folder</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/EkhW7HcSIjBBtGLw7cAE80EBsS8L2SomwfQTtf-kCqhqgQ?email=Ramesh%40vmaxhealthtech.com&e=CQ07mM" target="_blank" class="card-link" data-category="folder">
+          <div class="card">
+            <div class="card-tag">Folder</div>
+            <h3>Test Case Master Folder</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <!-- Continue with other cards for VMax 1.0 -->
+        <a href="https://vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/EudizYRlqz1HrB6N7-phKtwBTg00-Vd6TTqRgIF6h3y-_Q?email=Ramesh%40vmaxhealthtech.com&e=cHE137/vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/EkhW7HcSIjBBtGLw7cAE80EBsS8L2SomwfQTtf-kCqhqgQ?email=Ramesh%40vmaxhealthtech.com&e=CQ07mM" target="_blank" class="card-link" data-category="folder">
+          <div class="card">
+            <div class="card-tag">Folder</div>
+            <h3>Requirement Master Folder</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://www.figma.com/design/WrUpmN7fLEWGmDTgr8uWLY/VMax-Mobile-App-Development-Design-1.0?node-id=7118-3306&node-type=canvas&t=q297Gj2zO62ZUZnz-0" target="_blank" class="card-link" data-category="design">
+          <div class="card">
+            <div class="card-tag">Design</div>
+            <h3>Figma</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://forms.vmax.fit/vmaxwellness/form/FitmomclubEnquiryForm/formperma/2RPj9VElDPsF1Jl8AMdKUv4EHJ8EmOA17_9BCQkpUJI" target="_blank" class="card-link" data-category="form">
+          <div class="card">
+            <div class="card-tag">Form</div>
+            <h3>Zoho Form (Consultation)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <!-- Additional cards from your list -->
+        <a href="https://forms.absoluhealthcare.com/" target="_blank" class="card-link" data-category="form">
+          <div class="card">
+            <div class="card-tag">Form</div>
+            <h3>Referral Form (Live)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="http://164.52.200.111:8086/" target="_blank" class="card-link" data-category="form">
+          <div class="card">
+            <div class="card-tag">Form</div>
+            <h3>Referral Form Development</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://live.session.absoluhealthcare.com./" target="_blank" class="card-link" data-category="web-app">
+          <div class="card">
+            <div class="card-tag">Web App</div>
+            <h3>Shape Up Studio (Live)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://live.session.dev.absoluhealthcare.com./" target="_blank" class="card-link" data-category="web-app">
+          <div class="card">
+            <div class="card-tag">Web App</div>
+            <h3>Shape Up Studio (Development)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.003 2H8.032c.093 1.414.377 2.649.766 3.556.24.56.5.948.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.234.498-.623.737-1.182.389-.907.673-2.142.766-3.556zm1.166 4.118c.454-1.147.748-2.572.837-4.118h1.946a6.004 6.004 0 01-2.783 4.118zm-6.268 0C6.412 13.97 6.118 12.546 6.03 11H4.083a6.004 6.004 0 002.783 4.118z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://miro.com/app/board/uXjVKC6PtOg=/" target="_blank" class="card-link" data-category="design">
+          <div class="card">
+            <div class="card-tag">Design</div>
+            <h3>Test Board (Miro)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech-my.sharepoint.com/:x:/r/personal/ramesh_vmaxhealthtech_com/Documents/EOD%20Task%20Report.xlsx?d=w69ada44ad75941d8bb49a947ea1fa9ac&csf=1&web=1&e=kRYsp3" target="_blank" class="card-link" data-category="report">
+          <div class="card">
+            <div class="card-tag">Report</div>
+            <h3>EOD Task Report</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- VMax 2.0 Section -->
+      <h2>VMax 2.0</h2>
+      <div class="card-grid">
+        <a href="https://www.figma.com/design/20nMTH4g464rM5RcxSXasG/%F0%9F%91%A8%F0%9F%8F%BB%E2%80%8D%F0%9F%92%BB-FitMom-Mobile-App-Development-File-2.0?node-id=1-325&p=f" target="_blank" class="card-link" data-category="design">
+          <div class="card card-v2">
+            <div class="card-tag">Design</div>
+            <h3>VMax 2.0 - Figma (Mobile)</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/Eno8liMA2IdIrGG-iGaApJ0BPDqQsQseoeG7QPUzVvtaXw?e=XrA082" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card card-v2">
+            <div class="card-tag">Bugs</div>
+            <h3>VMax 2.0 Bug Attachment</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/s/techdepartment/EVC0wToNtEpIrOfIZE8HyLIBlTsneJwwgz82RjSRBnxo4Q?e=LUFDmj" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card card-v2">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>VMax 2.0 iOS Bug List</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/s/techdepartment/ERPDVE439B9MpHyQlAtA8EgB8LDu_DzR8rMtK4Ua4EevMw?e=VpLoxl" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card card-v2">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>VMax 2.0 Android Bug List</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+        
+        <a href="https://vmaxhealthtech.sharepoint.com/:x:/s/techdepartment/Edpoaz_fr19MvdknyljTIUIBgODA9tXmaH2ZGilIdqVX9g?e=ankGlk" target="_blank" class="card-link" data-category="bug-tracker">
+          <div class="card card-v2">
+            <div class="card-tag">Bug Tracker</div>
+            <h3>VMax 2.0 Web CRM Bug List</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+                <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/Ejki0ablUgNKhumcPU0-UpkBHC2Dv-5n8py-SPEIvjsd5w?e=XcvKt3" target="_blank" class="card-link" data-category="test-case">
+          <div class="card card-v2">
+            <div class="card-tag">Test Case</div>
+            <h3>VMax 2.0 Test Case Master Folder</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.sharepoint.com/:f:/s/techdepartment/EvEpOK4Fa2FInrbCy02aGc0Bd6sKn_uIJY6_Qe2SAtYpDA?e=8vYatf" target="_blank" class="card-link" data-category="folder">
+          <div class="card card-v2">
+            <div class="card-tag">Folder</div>
+            <h3>VMax 2.0 QA Master Folder</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://vmaxhealthtech.atlassian.net/jira/software/projects/VMAX2/boards/4" target="_blank" class="card-link" data-category="jira">
+          <div class="card card-v2">
+            <div class="card-tag">JIRA</div>
+            <h3>VMax 2.0 JIRA Board</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href="https://www.figma.com/design/GvcUONmfMCdrZjBGn13u9m/%F0%9F%91%A8%E2%80%8D%F0%9F%92%BBCRM-Design-2.0?node-id=844-790&p=f&t=G1M1iR4DDcD1pyGu-0" target="_blank" class="card-link" data-category="design">
+          <div class="card card-v2">
+            <div class="card-tag">Design</div>
+            <h3>VMax 2.0 CRM Figma</h3>
+            <div class="card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const moonIcon = darkModeToggle.querySelector('.moon');
+        const sunIcon = darkModeToggle.querySelector('.sun');
+        
+        // Check for saved theme preference or use device preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+          moonIcon.classList.add('hidden');
+          sunIcon.classList.remove('hidden');
+        }
+        
+        // Toggle theme
+        darkModeToggle.addEventListener('click', function() {
+          const isDarkMode = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+          
+          // Toggle icons
+          moonIcon.classList.toggle('hidden');
+          sunIcon.classList.toggle('hidden');
+        });
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const cards = document.querySelectorAll('.card-link');
+        
+        searchInput.addEventListener('input', function(e) {
+          const searchTerm = e.target.value.toLowerCase();
+          
+          cards.forEach(card => {
+            const cardText = card.innerText.toLowerCase();
+            const cardCategory = card.dataset.category ? card.dataset.category.toLowerCase() : '';
+            
+            if (cardText.includes(searchTerm) || cardCategory.includes(searchTerm)) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>
