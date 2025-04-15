@@ -1,0 +1,103 @@
+
+/* Base styles */
+:root {
+  --card-1-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --card-2-gradient: linear-gradient(135deg, #FF6CAB 0%, #7366FF 100%);
+  --text: #fff;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-text: #333;
+  --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  --card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  --tag-bg: rgba(0, 0, 0, 0.2);
+}
+
+.dark {
+  --card-bg: rgba(30, 41, 59, 0.8);
+  --card-text: #e2e8f0;
+  --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  --card-hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  --tag-bg: rgba(0, 0, 0, 0.4);
+}
+
+/* Card styles */
+.card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--card-text);
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--card-1-gradient);
+  border-radius: 5px 5px 0 0;
+}
+
+.card-v2::before {
+  background: var(--card-2-gradient);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  z-index: 1;
+}
+
+.card-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--tag-bg);
+  color: white;
+  border-radius: 15px;
+  padding: 0.1rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.card-icon {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .card-icon {
+  opacity: 0.7;
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.875rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+}
